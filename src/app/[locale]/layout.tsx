@@ -29,9 +29,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   return (
     <html>
       <body className={`${inter.variable} antialiased bg-[#FCFCFC]`}>
-        <NextIntlClientProvider>
-          <div className="w-full max-w-2xl mx-auto">{children}</div>
-        </NextIntlClientProvider>
+        <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
     </html>
   );
