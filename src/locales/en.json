@@ -1,5 +1,13 @@
 {
+  "Metadata": {
+    "title": "My App — Next.js Base",
+    "description": "A modern Next.js application built with App Router"
+  },
   "HomePage": {
     "title": "Hello world!"
+  },
+  "NotFound": {
+    "description": "The page you are looking for does not exist.",
+    "backHome": "Back to Home"
   }
 }

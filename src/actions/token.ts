@@ -1,25 +1,46 @@
 "use server";
 
 import { cookies } from "next/headers";
+import { revalidatePath } from "next/cache";
+import { z } from "zod";
 
-const tokenConfig: any = {
+// --- Validation Schemas ---
+const tokenSchema = z
+  .string()
+  .min(1, "Token must not be empty")
+  .max(4096, "Token exceeds maximum length");
+
+const saveTokensSchema = z.object({
+  accessToken: tokenSchema,
+  accountToken: tokenSchema,
+});
+
+// --- Cookie Configuration ---
+const tokenConfig = {
   maxAge: 60 * 60 * 24 * 7, // 1 week
   path: "/",
   httpOnly: true,
-  secure: process.env.NEXT_PUBLIC_ENV == "production",
-  sameSite: "lax",
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "lax" as const,
 };
 
+// --- Server Actions ---
 export const saveTokens = async (accessToken: string, accountToken: string) => {
-  (await cookies()).set("acct", accountToken, tokenConfig);
-  (await cookies()).set("act", accessToken, tokenConfig);
-  return;
+  const validated = saveTokensSchema.parse({ accessToken, accountToken });
+
+  const cookieStore = await cookies();
+  cookieStore.set("acct", validated.accountToken, tokenConfig);
+  cookieStore.set("act", validated.accessToken, tokenConfig);
+
+  revalidatePath("/");
 };
 
 export const clearTokens = async () => {
-  (await cookies()).delete("acct");
-  (await cookies()).delete("act");
-  return;
+  const cookieStore = await cookies();
+  cookieStore.delete("acct");
+  cookieStore.delete("act");
+
+  revalidatePath("/");
 };
 
 export const getAccessToken = async () => {

@@ -1,34 +1,40 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-type State = {
-  user: any;
-  setUser: (user: any) => void;
-  getUser: () => any;
-  clearUser: () => void;
-  config: {
-    pricingMsg?: string;
-    isNewUser?: boolean;
-  } | null;
-  setConfig: (config: any) => void;
-  getConfig: () => any;
-  clearConfig: () => void;
-};
+// --- Types ---
+// TODO: Replace with actual User type from your API
+interface User {
+  id: string;
+  email: string;
+  name: string;
+  [key: string]: unknown;
+}
 
-const useAppStore = create<State, [["zustand/persist", State]]>(
+interface AppConfig {
+  pricingMsg?: string;
+  isNewUser?: boolean;
+}
+
+interface AppState {
+  user: User | null;
+  setUser: (user: User) => void;
+  clearUser: () => void;
+  config: AppConfig | null;
+  setConfig: (config: AppConfig) => void;
+  clearConfig: () => void;
+}
+
+// --- Store ---
+// Usage: const user = useAppStore(s => s.user);
+//        const setUser = useAppStore(s => s.setUser);
+const useAppStore = create<AppState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       user: null,
-      setUser: (user: any) => set({ user }),
-      getUser: () => {
-        return get().user || null;
-      },
+      setUser: (user: User) => set({ user }),
       clearUser: () => set({ user: null }),
       config: null,
-      setConfig: (config: any) => set({ config }),
-      getConfig: () => {
-        return get().config || null;
-      },
+      setConfig: (config: AppConfig) => set({ config }),
       clearConfig: () => set({ config: null }),
     }),
     {
@@ -39,3 +45,4 @@ const useAppStore = create<State, [["zustand/persist", State]]>(
 );
 
 export default useAppStore;
+

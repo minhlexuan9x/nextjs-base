@@ -1,5 +1,13 @@
 {
+  "Metadata": {
+    "title": "My App — Next.js Base",
+    "description": "Ứng dụng Next.js hiện đại với App Router"
+  },
   "HomePage": {
     "title": "Chào cưng!"
+  },
+  "NotFound": {
+    "description": "Trang bạn đang tìm kiếm không tồn tại.",
+    "backHome": "Về Trang Chủ"
   }
 }
